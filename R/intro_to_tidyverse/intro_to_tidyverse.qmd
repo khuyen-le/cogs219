@@ -193,6 +193,8 @@ R supplies all sorts of functions that are useful for data analysis. For example
 
 ```{r}
 #Find the maximum weight in the body_mass_g column
+max(penguins$body_mass_g,na.rm=TRUE)
+#chonk!
 ```
 
 ### Pipes
@@ -292,8 +294,15 @@ Mini exercises:
 
 ```{r}
 #filter to only male Gentoo penguins
-
+penguins |>
+  filter(sex=="male",species=="Gentoo") 
 #compute the average bill length of Adelie penguins
+penguins |>
+  filter(species=="Adelie") |>
+  summarise(avg_bill_length = mean(bill_length_mm, na.rm=T))
+
+# non-tidyverse way: 
+mean(penguins[penguins$species=="Adelie",]$bill_length_mm, na.rm=T)
 ```
 
 ### Mutate
@@ -458,12 +467,15 @@ The data contains the following columns:
 -   is_right: whether the response was correct (is_right=1) or incorrect (is_right=0)
 
 Is the data in tidy format? Why/ why not?
+*Yes! Because each line only has the result from 1 trial (1 image name). Nice job Martin :) *
 
 ### 4.3. Summarize the data from Experiment 1A
 
 Let's summarize the average accuracy for each participant from Experiment 1A only, retaining information about which condition they were in.
 
 Why is it important to first summarize the data by participant? (tip: non-independence of observations)
+*Data points belonging to each participant will not be independent, so it's best to calculate the average per participant as an index.*
+*Nested structure in the data*
 
 To do so, we need to:
 
@@ -498,6 +510,8 @@ ggplot(subj_1a, aes(condition,accuracy,color=condition,fill=condition))+
 What if I'm interested in how accuracy changes across blocks, again for Experiment 1A? Now, I can also group by `block_num`.
 
 In the code below, why do I first group by `subject` and then by `block_num`?
+*Because we want to immediately see how each participants' performance changes across blocks. This way allows the resulting table to be visually inspected easily.*
+
 
 ```{r}
 subj_block_1a <- nameability_data |>
@@ -507,6 +521,13 @@ subj_block_1a <- nameability_data |>
     accuracy=mean(is_right)
   )
 subj_block_1a
+
+ nameability_data |>
+  filter(experiment == "1A") |>
+  group_by(condition,block_num,subject) |>
+  summarize(
+    accuracy=mean(is_right)
+  )
 ```
 
 Finally, it would be helpful to use the participant-level compute the group-level means for each condition, along with error bars (to give a sense of variability).
@@ -515,7 +536,7 @@ Go through each line. Can you figure out what each one is doing?
 
 Notes: we introduce a couple of new functions here:
 
--    `sd()`: computes the standard deviation
+-   `sd()`: computes the standard deviation
 
 -   `sqrt()`: computes the square root
 
