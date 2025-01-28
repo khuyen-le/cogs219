@@ -161,9 +161,11 @@ vignette("ggplot2-specs")
 
 Make a scatter plot that shows the relationship between the variables `depth` (on the x-axis), and `table` (on the y-axis). Take a look at the description for the `diamonds` dataset so you know what these different variables mean. Your plot should look like the one shown in Figure \@ref(fig:practice-plot1).
 
-```{r}
-#enter your plot here
-
+```{r scatter-depth, fig.cap="Scatterplot with depth", fig.height=6, fig.width=8, out.width="95%"}
+ggplot(data = df.diamonds,
+       mapping = aes(x = depth,
+                     y = table)) +
+  geom_point()
 ```
 
 ```{r practice-plot1, fig.align="center", fig.cap="Practice plot 1.", fig.height=6, fig.width=8, out.width="95%"}
@@ -172,8 +174,11 @@ include_graphics("figures/vis1_practice_plot1.png")
 
 **Advanced**: A neat trick to get a better sense for the data here is to add transparency. Your plot should look like the one shown in Figure \@ref(fig:practice-plot1a).
 
-```{r}
-# make advanced practice plot 1 here
+```{r scatter-depth-transparent, fig.cap="Scatterplot with depth and transparency", fig.height=6, fig.width=8, out.width="95%"}
+ggplot(data = df.diamonds,
+       mapping = aes(x = depth,
+                     y = table)) +
+  geom_point(alpha = 0.1)
 ```
 
 ```{r practice-plot1a, fig.align="center", fig.cap="Practice plot 1.", fig.height=6, fig.width=8, out.width="95%"}
@@ -266,10 +271,14 @@ Let's take a look at two more principles for plotting data that are extremely he
 
 Make a bar plot that shows the average `price` of diamonds (on the y-axis) as a function of their `clarity` (on the x-axis). Also add error bars. Your plot should look like the one shown in Figure \@ref(fig:practice-plot2).
 
-```{r}
-#your practice plot here
-
-  
+```{r bar-price-clarity, fig.cap='Bar plot for price against clarity.', out.width="90%", fig.align="center",}
+ggplot(data = df.diamonds,
+       mapping = aes(x = clarity,
+                     y = price)) +
+  stat_summary(fun = "mean", 
+               geom = "bar") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange")
 ```
 
 ```{r practice-plot2, out.width="90%", fig.align="center", fig.cap="Practice plot 2.", out.width="95%"}
@@ -278,8 +287,17 @@ include_graphics("figures/vis1_practice_plot2.png")
 
 **Advanced**: Try to make the plot shown in Figure \@ref(fig:practice-plot2a).
 
-```{r}
-# make advanced practice plot 2 here
+```{r bar-price-clarity-color, fig.cap='Bar plot for price against clarity, with color', out.width="90%", fig.align="center",}
+ggplot(data = df.diamonds,
+       mapping = aes(x = clarity,
+                     y = price)) +
+  stat_summary(fun = "mean", 
+               geom = "bar", 
+               fill = "lightblue", 
+               color = "black") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange", 
+               linewidth = 1)
 ```
 
 ```{r practice-plot2a, out.width="90%", fig.align="center", fig.cap="Practice plot 2.", out.width="95%"}
@@ -307,7 +325,7 @@ Well, we got some separate lines here but we don't know which line corresponds t
 ggplot(data = df.diamonds,
        mapping = aes(x = color,
                      y = price,
-                     group = cut,
+                      group = cut,
                      color = cut)) +
   stat_summary(fun = "mean",
                geom = "line",
@@ -366,8 +384,18 @@ So, still somewhat surprisingly, diamonds with the worst color (J) are more expe
 
 Recreate the plot shown in Figure \@ref(fig:practice-plot3).
 
-```{r}
-# make practice plot 3 here
+```{r line-plot-price-color, out.width="90%", fig.align="center", fig.cap="Line graph of price against color."}
+ggplot(data = df.diamonds,
+       mapping = aes(x = color,
+                     y = price,
+                    group = clarity,
+                     color = clarity)) +
+  stat_summary(fun = "mean",
+               geom = "line",
+               linewidth = 1.5) + 
+  stat_summary(fun.data = "mean_cl_boot", 
+               geom = "linerange",
+               linewidth = 0.75)
 ```
 
 ```{r practice-plot3, out.width="90%", fig.align="center", fig.cap="Practice plot 3.", out.width="95%"}
@@ -376,6 +404,26 @@ include_graphics("figures/vis1_practice_plot3.png")
 
 **Advanced**: Try to recreate the plot show in in Figure \@ref(fig:practice-plot3a).
 
+```{r line-plot-price-color-range, out.width="90%", fig.align="center", fig.cap="Practice plot 3."}
+ggplot(data = df.diamonds,
+       mapping = aes(x = color,
+                     y = price,
+                    group = clarity,
+                     color = clarity)) +
+  stat_summary(fun = "mean",
+               geom = "line",
+               linewidth = 1.5, 
+               position = position_dodge2(width = 0.8)) + 
+  stat_summary(fun.data = "mean_cl_boot", 
+               geom = "pointrange",
+               shape = 21,
+               fill = "white",
+               position = position_dodge2(width = 0.8)) + 
+  geom_vline(aes(xintercept = color),  
+             linetype = "dashed", 
+             position = "dodge")
+  
+```
 ```{r}
 # make advanced practice plot 3 here
 ```

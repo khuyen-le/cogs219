@@ -24,7 +24,7 @@ In this tutorial, we will lift our `ggplot2` skills to the next level!
 Let's first install the new packages that you might not have yet.
 
 ```{r, eval=FALSE}
-install.packages(c("gganimate", "gapminder", "ggridges", "devtools", "png", "gifski", "patchwork"))
+#install.packages(c("gganimate", "gapminder", "ggridges", "devtools", "png", "gifski", "patchwork"))
 ```
 
 Now, let's load the packages that we need for these exercise

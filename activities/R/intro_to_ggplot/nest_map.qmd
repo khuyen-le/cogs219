@@ -1,0 +1,93 @@
+---
+title: "functions"
+format: html
+---
+
+```{r}
+library(gapminder)
+library(tidyverse)
+library(broom)
+```
+
+```{r}
+df <- gapminder
+df |> 
+  glimpse()
+```
+
+```{r}
+hist(df$gdpPercap)
+```
+
+```{r}
+df <- df |> 
+  mutate(log_gdp_pc = log(gdpPercap))
+```
+
+```{r}
+hist(df$log_gdp_pc)
+```
+
+```{r}
+df_77 <- df |> 
+  filter(year == 1977)
+
+fit <- lm(lifeExp ~ log_gdp_pc, data = df_77)
+summary(fit)
+```
+
+```{r}
+ggplot(df_77, 
+       aes(x = log_gdp_pc, 
+           y = lifeExp)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+```{r}
+fit %>%
+  broom::tidy() %>%
+  knitr::kable()
+```
+
+What if I want to fit my regression to every single year? 
+
+### nest()
+
+```{r}
+nested <- gapminder %>%
+  group_by(year) %>%
+  nest()
+```
+
+### map()
+Run a function over the top of each row of a dataframe.
+
+```{r}
+fit_ols <- function(df) {
+  lm(lifeExp ~ log_gdp_pc, data = df)
+}
+# and then we're gonna run this function over the dataframe!
+```
+
+### Combine nest() and map()
+
+Use nest together with map
+
+```{r}
+nested <- df |> 
+  group_by(year) |> 
+  nest() |> 
+  mutate(model = map(data, fit_ols)) |> #data actually access the column data within df!
+  mutate(output = map(model, broom::tidy)) |>
+  unnest(output) |> # expand the rows of output to the original table %>%
+  filter(term == "log_gdp_pc")
+```
+```{r}
+ggplot(df, 
+       aes(x = log_gdp_pc, 
+           y = lifeExp)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  facet_wrap(~year)
+```
