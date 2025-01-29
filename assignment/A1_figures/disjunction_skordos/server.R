@@ -16,40 +16,50 @@ theme_set(theme_classic())
 cbPalette <- c("#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#56B4E9", "#CC79A7", "#000000")
 
 function(input, output, session) {
-    N_TRIAL = 4 #number of trials for each critical trial type
+    output$introText <- renderUI({
+      div(
+        "This Shiny app visualizes data from Skordos et al. (2017). 
+          Reference: Skordos, D., Feiman, R., Bale, A., & Barner, D. (2020). 
+          Do children interpret ‘or’conjunctively?. 
+          <i>Journal of Semantics, 37</i>(2), 247-267."
+      )
+    })
+  
+    # create response data 
     data_resp <- reactive({
       data %>%
         filter(expt %in% input$selectExpt) %>%
         filter(`Trial Type` %in% input$selectTrialType) %>%
         group_by(`Subject ID`, expt, `Trial Type`) %>%
         summarise(mean_resp = mean(response_yes))
-      
     })
     
+    # create categorization data
     data_cat <- reactive({
       data %>% 
         filter(`Trial Type` %in% c("1_Disjunct_True", "2_Disjunct_True")) %>%
         group_by(`Subject ID`, expt, `Trial Type`) %>%
-        summarise(sum_resp_yes = count(response_yes == 1), 
-                  sum_resp_no = count(response_yes == 0)) %>%
-        pivot_wider(names_from = `Trial Type`, values_from = c(sum_resp_yes, sum_resp_now))
-      #%>%
-        # mutate(child_type = case_when(
-        #   `1_Disjunct_True` >= input$threshold & `2_Disjunct_True` >= input$threshold ~ "inclusive", 
-        #   `1_Disjunct_True` <= N_TRIAL - input$threshold & `2_Disjunct_True` >= input$threshold ~ "conjunctive", 
-        #   `1_Disjunct_True` >= input$threshold & `2_Disjunct_True` <= N_TRIAL - input$threshold ~ "exclusive",
-        #   .default = "other"
-        #   
-        # ))
+        summarise(sum_resp_yes = length(response_yes[response_yes == 1]), 
+                  sum_resp_no = length(response_yes[response_yes == 0])) %>%
+        pivot_wider(names_from = `Trial Type`, values_from = c(sum_resp_yes, sum_resp_no)) %>%
+      mutate(child_type = case_when(
+        sum_resp_yes_1_Disjunct_True >= input$threshold 
+          & sum_resp_yes_2_Disjunct_True >= input$threshold ~ "inclusive",
+        sum_resp_no_1_Disjunct_True >= input$threshold 
+          & sum_resp_yes_2_Disjunct_True >= input$threshold ~ "conjunctive",
+        sum_resp_yes_1_Disjunct_True >= input$threshold 
+          & sum_resp_no_2_Disjunct_True >= input$threshold ~ "exclusive",
+        .default = "other"
+      ))
     })
     
+    #### RESPONSE TAB ####
     output$respTable <- renderTable(data_resp() %>%
                                   group_by(expt, `Trial Type`) %>%
                                   summarise(`Proportion Response 'Yes'` = mean(mean_resp)) %>%
                                   rename(Experiment = expt))
     
     output$respPlot <- renderPlot({
-
         ggplot(data = data_resp(), 
                mapping = aes(x = `Trial Type`, 
                              y = mean_resp, 
@@ -69,7 +79,9 @@ function(input, output, session) {
                          position = position_nudge(x = -.1, y = 0),
                          side = "l", 
                          alpha = 0.5,
-                         #fill = "#E69F00"
+                         # wanted to make this match the experiment, but
+                         # it didn't work...
+                         #fill = "#E69F00" 
                          ) +
         geom_half_violin(data = data_resp() %>%
                            filter(expt == "Three Alternatives"),
@@ -81,7 +93,7 @@ function(input, output, session) {
                          ) +
         geom_hline(yintercept = 0.5, 
                    linetype = "dashed") + 
-        coord_cartesian(
+        coord_cartesian( # to make sure I don't cut off anything
           ylim = c(0,1)
         ) +
         scale_color_manual(values=cbPalette) + 
@@ -90,27 +102,28 @@ function(input, output, session) {
         labs(y = "Proportion Responding 'Yes'", 
              color = "Experiment", 
              fill = "Experiment")
-    })
+      })
         
+      #### CATEGORIZATION TAB ####
       output$catTable <- renderTable(data_cat() %>%
                                        group_by(expt, child_type) %>%
                                        count() %>%
                                        mutate(n = as.character(n)) %>%
-                                       pivot_wider(names_from = child_type, 
+                                       pivot_wider(names_from = child_type,
                                                    values_from = n) %>%
-                                       bind_rows(.,
-                                         tibble(
-                                           expt = "Tieu et al. (2017)",
-                                           conjunctive = as.character(19),
-                                           inclusive = as.character(14),
-                                           exclusive = as.character(3),
-                                           other = as.character(10)
-                                         )
-                                       ) %>%
-                                       rename(Experiment = expt) %>%
-                                       select(Experiment, inclusive, exclusive, 
-                                              conjunctive, other)
-                                     )
+                                      bind_rows(.,
+                                        tibble(
+                                          expt = "Tieu et al. (2017)",
+                                          conjunctive = as.character(19),
+                                          inclusive = as.character(14),
+                                          exclusive = as.character(3),
+                                          other = as.character(10)
+                                        )
+                                      ) %>%
+                                      rename(Experiment = expt) %>%
+                                      select(Experiment, inclusive, 
+                                             exclusive, conjunctive, other)
+                    )
       
       output$catPlot <- renderPlot({
         ggplot(data_cat(),
@@ -124,5 +137,4 @@ function(input, output, session) {
                color = "Experiment", 
                fill = "Experiment")
       })
-
 }

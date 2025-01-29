@@ -9,13 +9,21 @@
 
 library(shiny)
 
-# Define UI for application that draws a histogram
+# Define UI for application
 fluidPage(
+    title = "Children's interpretation of 'or'",
+    tags$h2("Children's interpretation of 'or'"),
+    tags$div(
+       tags$span("This Shiny app visualizes data from 
+                  Skordos, D., Feiman, R., Bale, A., & Barner, D. (2020).
+                  Do children interpret ‘or’conjunctively?.", 
+                 tags$i("Journal of Semantics, 37"),
+                 "(2), 247-267."),
+       tags$a("https://doi.org/10.1093/jos/ffz022")
+    ),
+    br(),
 
-    # Application title
-    titlePanel("Do children interpret 'or' conjunctively?"),
-
-    # Sidebar with a slider input for number of bins
+    # Sidebar
     sidebarLayout(
         sidebarPanel(
             checkboxGroupInput(
@@ -40,19 +48,21 @@ fluidPage(
                         max = 4,
                         value = 3), 
             
-        ),
+      ),
 
-        # Show a plot of the generated distribution
-        mainPanel(
-          tabsetPanel(
-            tabPanel("Response", 
-                     plotOutput("respPlot"), 
-                     tableOutput('respTable')
-                    ), 
-            tabPanel("Categorization", 
-                     plotOutput("catPlot"),
-                     tableOutput('catTable'))
-          )
+      mainPanel(
+        tabsetPanel(
+          # plot responses
+          tabPanel("Response", 
+                   plotOutput("respPlot"), 
+                   tableOutput('respTable')
+                  ), 
+          # plot categorization
+          tabPanel("Categorization", 
+                   plotOutput("catPlot"),
+                   tableOutput('catTable')
+                   )
         )
+      )
     )
 )

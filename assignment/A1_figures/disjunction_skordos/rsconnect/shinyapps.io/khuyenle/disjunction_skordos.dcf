@@ -1,0 +1,12 @@
+name: disjunction_skordos
+title: disjunction_skordos
+username: khuyenle
+account: khuyenle
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13841793
+bundleId: 9716383
+url: https://khuyenle.shinyapps.io/disjunction_skordos/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

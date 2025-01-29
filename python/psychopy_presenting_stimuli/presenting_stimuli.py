@@ -7,6 +7,14 @@ win = visual.Window([800,800],color="grey", units='pix', checkTiming=False)
 #positions
 positions = {"left": (-200,0),"right": (200,0)}
 
+# add a rectangular frame
+# there's a lot going on here: list comprehension over the keys of a dictionary - make sure you understand how this works!
+frame_list = [visual.Rect(win,fillColor="white",lineWidth=5,lineColor="black",size=[225,225],pos=positions[pos_key]) for pos_key in positions.keys()]
+
+# draw boxes
+for frame in frame_list:
+    frame.draw()
+    
 #create images
 image_path_1 = os.path.join(os.getcwd(),"stimuli","images","bulbasaur.png")
 image_path_2 = os.path.join(os.getcwd(),"stimuli","images","charmander.png")
