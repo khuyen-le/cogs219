@@ -16,14 +16,6 @@ theme_set(theme_classic())
 cbPalette <- c("#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#56B4E9", "#CC79A7", "#000000")
 
 function(input, output, session) {
-    output$introText <- renderUI({
-      div(
-        "This Shiny app visualizes data from Skordos et al. (2017). 
-          Reference: Skordos, D., Feiman, R., Bale, A., & Barner, D. (2020). 
-          Do children interpret ‘or’conjunctively?. 
-          <i>Journal of Semantics, 37</i>(2), 247-267."
-      )
-    })
   
     # create response data 
     data_resp <- reactive({
