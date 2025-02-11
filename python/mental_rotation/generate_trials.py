@@ -5,6 +5,7 @@ def generate_trials(subj_code,seed):
 	separator=","
 	
 	#set seed
+	#why? in case we want to generate the same trials again
 	random.seed(int(seed))
 	
 	#open trial file and write header
