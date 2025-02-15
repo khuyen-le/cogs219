@@ -14,6 +14,7 @@ instruction = visual.TextStim(win,text="Press the first letter of the ink color"
 instruction.autoDraw = True
 
 fixation = visual.TextStim(win,text="+", height=15, color="black",pos=[0,0])
+feedback_incorrect = visual.TextStim(win,text="INCORRECT", height=40, color="black",pos=[0,0])
 
 response_keys = ['r', 'o', 'y', 'g', 'b', 'q'] #'q' to escape
 RTs = [] #store response times
@@ -50,15 +51,19 @@ while True:
     responseTimer.reset()
     key_pressed = event.waitKeys(keyList=response_keys, timeStamped=responseTimer)
     if key_pressed[0][0] != 'q':  
-        print(key_pressed[0])    
         rt = key_pressed[0][1]*1000 # convert to ms
         print(rt)
         RTs.append(rt)
+        # if wrong, give feedback
+        if key_pressed[0][0] != cur_stim[0]: 
+            feedback_incorrect.draw()
+            win.flip()
+            core.wait(1)
         #continue to next stim
-        placeholder.draw()
-        instruction.draw()    
-        win.flip()
-        core.wait(.15)
+        #placeholder.draw()
+        #instruction.draw()    
+        #win.flip()
+        #core.wait(.15)
     if key_pressed[0][0] == 'q':
         win.close()
         core.quit()
