@@ -16,6 +16,9 @@ instruction.autoDraw = True
 fixation = visual.TextStim(win,text="+", height=15, color="black",pos=[0,0])
 
 response_keys = ['r', 'o', 'y', 'g', 'b', 'q'] #'q' to escape
+RTs = [] #store response times
+
+responseTimer = core.Clock()
 
 while True:
     # display fixation cross for 500ms
@@ -41,16 +44,22 @@ while True:
     instruction.draw()
     word_stim.draw()
     win.flip()
-    
-    #get the first key press
-    response = event.waitKeys(keyList=response_keys)[0] 
-    if response != 'q': 
+
+    #clear timer to wait for response
+    event.clearEvents()
+    responseTimer.reset()
+    key_pressed = event.waitKeys(keyList=response_keys, timeStamped=responseTimer)
+    if key_pressed[0][0] != 'q':  
+        print(key_pressed[0])    
+        rt = key_pressed[0][1]*1000 # convert to ms
+        print(rt)
+        RTs.append(rt)
         #continue to next stim
         placeholder.draw()
         instruction.draw()    
         win.flip()
         core.wait(.15)
-    if response == 'q':
+    if key_pressed[0][0] == 'q':
         win.close()
         core.quit()
         
