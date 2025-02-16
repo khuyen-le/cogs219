@@ -24,7 +24,22 @@ RTs = [] #store response times
 
 responseTimer = core.Clock()
 
-generate_trials('test', 100)
+# get runtime variables
+order = ['subj_code', 'seed', 'num_reps']
+runtime_vars_template = {'subj_code':'stroop_101', 'seed': 101, 'num_reps': 25}
+
+def getRuntimeVariables(runtime_vars, order, exp_title='Stroop'):
+    dlg = gui.DlgFromDict(runtime_vars, order=order, title=exp_title)
+    #got this from assignment code
+    if dlg.OK:
+        return runtime_vars
+    else: 
+        print('User Cancelled')
+
+runtime_vars = getRuntimeVariables(runtime_vars_template, order=order)
+
+#generate trials
+generate_trials(runtime_vars['subj_code'], runtime_vars['seed'], runtime_vars['num_reps'])
 
 def make_incongruent(cur_color): 
     """Return a random color that is different from the color passed in. 
