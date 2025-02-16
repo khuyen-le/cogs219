@@ -32,7 +32,7 @@ def make_incongruent(cur_color):
     #list comprehension solution from assignment code!
     #much better than my original solution, 
     #which is to randomly choosing from the full stimuli list in a while loop and hope for the best...
-    incongruent_colors = [stim for stim in stimuli if stim != cur_color])
+    incongruent_colors = [stim for stim in stimuli if stim != cur_color]
     return random.choice(incongruent_colors)
 
 while True:
@@ -80,7 +80,6 @@ while True:
         
     elif key_pressed[0][0] != 'q':  
         rt = key_pressed[0][1]*1000 # convert to ms
-        print(rt)
         RTs.append(rt)
         #if wrong, give feedback
         #cur_color instead of cur_word!
@@ -94,6 +93,9 @@ while True:
         #win.flip()
         #core.wait(.15)
     elif key_pressed[0][0] == 'q':
-        win.close()
-        core.quit()
+        break
+
+print(RTs)
+win.close()
+core.quit()
         
