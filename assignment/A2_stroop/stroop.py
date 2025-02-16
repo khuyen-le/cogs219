@@ -41,6 +41,24 @@ runtime_vars = getRuntimeVariables(runtime_vars_template, order=order)
 #generate trials
 generate_trials(runtime_vars['subj_code'], runtime_vars['seed'], runtime_vars['num_reps'])
 
+#read in trials
+def import_trials(trial_filename, col_names=None, separator=','):
+    trial_file = open(trial_filename, 'r')
+    if col_names is None:
+        # Assume the first row contains the column names
+        col_names = trial_file.readline().rstrip().split(separator)
+    trials_list = []
+    #loop through each line in trial_file
+    for cur_trial in trial_file:
+        cur_trial = cur_trial.rstrip().split(separator)
+        assert len(cur_trial) == len(col_names) # make sure the number of column names = number of columns
+        #create a dict of pairwise values in col_names and cur_trial
+        trial_dict = dict(zip(col_names, cur_trial))
+        trials_list.append(trial_dict)
+    return trials_list
+
+trials_list = import_trials(f"trials/{runtime_vars['subj_code']}_trials.csv")
+
 def make_incongruent(cur_color): 
     """Return a random color that is different from the color passed in. 
     :Parameters:
@@ -53,7 +71,7 @@ def make_incongruent(cur_color):
     incongruent_colors = [stim for stim in stimuli if stim != cur_color]
     return random.choice(incongruent_colors)
 
-while True:
+for cur_trial in trials_list:
     # display fixation cross for 500ms
     placeholder.draw()
     instruction.draw()
@@ -67,19 +85,17 @@ while True:
     win.flip()
     core.wait(0.5)
     
-    #choose randomly from stimuli list and trial types
-    cur_word = random.choice(stimuli)
-    cur_trial_type = random.choice(trial_types)
+    #set trial properties based on current trial from trials_list
+    cur_word = cur_trial['word']
+    cur_color = cur_trial['color']
+    cur_trial_type = cur_trial['trial_type']
+    cur_orientation = cur_trial['orientation']
 
     #display each stim for 1.0 sec
     word_stim.setText(cur_word)
-
-    if cur_trial_type == 'incongruent': 
-        cur_color = make_incongruent(cur_word)
-    else: 
-        cur_color = cur_word
-
     word_stim.setColor(cur_color)
+    if cur_orientation == "upside_down": 
+        word_stim.setOri(180)
     placeholder.draw()
     instruction.draw()
     word_stim.draw()
