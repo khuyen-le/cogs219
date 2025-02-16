@@ -3,6 +3,7 @@ import sys
 import os
 import random
 from psychopy import visual,event,core,gui
+from generate_trials import generate_trials
 
 stimuli = ['red', 'orange', 'yellow', 'green', 'blue']
 trial_types = ['congruent', 'incongruent']
@@ -22,6 +23,8 @@ response_keys = ['r', 'o', 'y', 'g', 'b', 'q'] #'q' to escape
 RTs = [] #store response times
 
 responseTimer = core.Clock()
+
+generate_trials('test', 100)
 
 def make_incongruent(cur_color): 
     """Return a random color that is different from the color passed in. 
