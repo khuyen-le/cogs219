@@ -3,12 +3,20 @@ import os
 import glob
 
 def getRuntimeVariables(runtime_vars, order, exp_title='Stroop'):
-    dlg = gui.DlgFromDict(runtime_vars, order=order, title=exp_title)
-    #got this from assignment code
-    if dlg.OK:
-        return runtime_vars
-    else: 
-        print('User Cancelled')
+    while True: 
+        dlg = gui.DlgFromDict(runtime_vars, order=order, title=exp_title)
+        if dlg.OK: 
+            #if subject code has already been used, then loop back to input box
+            file_name = "trials/" + runtime_vars['subj_code'] + "_trials.csv"
+            if os.path.isfile(file_name): 
+                errorDlg = gui.Dlg(title="Error")
+                errorDlg.addText(f"Error: {runtime_vars['subj_code']} already in use.", color = 'Red')
+                errorDlg.show()
+            else: 
+                return runtime_vars
+        else: 
+            print('User Cancelled')
+            break
 
 #read in trials
 def import_trials(trial_filename, col_names=None, separator=','):

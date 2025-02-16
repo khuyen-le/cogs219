@@ -9,6 +9,7 @@ def generate_trials(subj_code, seed, num_repetitions=25):
     '''
     import os
     import random
+    from psychopy import gui
 
     # define general parameters and functions here
     separator = ","
@@ -36,7 +37,9 @@ def generate_trials(subj_code, seed, num_repetitions=25):
         os.mkdir('trials')
     except FileExistsError:
         print('Trials directory exists; proceeding to open file')
-    f = open(f"trials/{subj_code}_trials.csv","w")
+    
+    file_name = "trials/" + subj_code + "_trials.csv"
+    f = open(f"{file_name}","w")
 
     #write header
     header = separator.join(["subj_code", "seed", "word", 'color','trial_type','orientation'])

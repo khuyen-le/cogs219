@@ -28,6 +28,7 @@ responseTimer = core.Clock()
 # get runtime variables
 order = ['subj_code', 'seed', 'num_reps']
 runtime_vars_template = {'subj_code':'stroop_101', 'seed': 101, 'num_reps': 25}
+
 runtime_vars = getRuntimeVariables(runtime_vars_template, order=order)
 
 #generate trials

@@ -1,0 +1,14 @@
+subj_code,seed,word,color,trial_type,orientation,trial_num,response,is_correct,rt
+stroop_102,101,yellow,blue,incongruent,upright,1,y,0,1062.761250010226
+stroop_102,101,red,red,congruent,upside_down,2,r,1,1603.0925416271202
+stroop_102,101,blue,blue,congruent,upright,3,NA,0,More than 2000
+stroop_102,101,yellow,orange,incongruent,upside_down,4,o,1,1893.8532500178553
+stroop_102,101,green,green,congruent,upside_down,5,g,1,1327.8217499610037
+stroop_102,101,blue,blue,congruent,upside_down,6,b,1,1005.0080416258425
+stroop_102,101,blue,yellow,incongruent,upside_down,7,b,0,1166.9112500385381
+stroop_102,101,blue,yellow,incongruent,upside_down,8,b,0,896.711083361879
+stroop_102,101,orange,orange,congruent,upside_down,9,o,1,840.6734583550133
+stroop_102,101,red,orange,incongruent,upside_down,10,r,0,890.5217916471884
+stroop_102,101,green,green,congruent,upside_down,11,g,1,628.8419166812673
+stroop_102,101,blue,blue,congruent,upright,12,b,1,804.1101666749455
+stroop_102,101,orange,orange,congruent,upside_down,13,o,1,529.5119166257791
