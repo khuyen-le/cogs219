@@ -15,6 +15,7 @@ instruction.autoDraw = True
 
 fixation = visual.TextStim(win,text="+", height=15, color="black",pos=[0,0])
 feedback_incorrect = visual.TextStim(win,text="INCORRECT", height=40, color="black",pos=[0,0])
+feedback_slow = visual.TextStim(win,text="TOO SLOW", height=40, color="black",pos=[0,0])
 
 response_keys = ['r', 'o', 'y', 'g', 'b', 'q'] #'q' to escape
 RTs = [] #store response times
@@ -49,8 +50,15 @@ while True:
     #clear timer to wait for response
     event.clearEvents()
     responseTimer.reset()
-    key_pressed = event.waitKeys(keyList=response_keys, timeStamped=responseTimer)
-    if key_pressed[0][0] != 'q':  
+    key_pressed = event.waitKeys(maxWait=2, 
+                                 keyList=response_keys, 
+                                 timeStamped=responseTimer)
+    if not key_pressed: 
+        feedback_slow.draw()
+        win.flip()
+        core.wait(1)
+        
+    elif key_pressed[0][0] != 'q':  
         rt = key_pressed[0][1]*1000 # convert to ms
         print(rt)
         RTs.append(rt)
@@ -64,7 +72,7 @@ while True:
         #instruction.draw()    
         #win.flip()
         #core.wait(.15)
-    if key_pressed[0][0] == 'q':
+    elif key_pressed[0][0] == 'q':
         win.close()
         core.quit()
         
