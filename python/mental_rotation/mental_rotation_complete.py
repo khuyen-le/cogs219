@@ -20,9 +20,9 @@ positions = {"center": (0,0)}
 separator=","
 
 #preload
-images_dictionary = load_files(os.path.join(os.getcwd(),"stimuli","images"),'.jpg',fileType="image",win=win)
-print(images_dictionary)
-print(images_dictionary['1_0_R'])
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+print(cur_dir)
+images_dictionary = load_files(os.path.join(cur_dir,"stimuli","images"),'.jpg',fileType="image",win=win)
 
 #add feedback
 correct_feedback = visual.TextStim(win, text = "Correct!",color="white", height=30, pos = (0,0))
@@ -41,7 +41,6 @@ incorrect_feedback_sound = sound.Sound(incorrect_feedback_sound_path)
 #read in trials
 trial_path = os.path.join(os.getcwd(),'trials',runtime_vars['subj_code']+'_trials.csv')
 trial_list = import_trials(trial_path)
-print(trial_list)
 
 #open file to write data to and store a header
 data_file = open(os.path.join(os.getcwd(),'data',runtime_vars['subj_code']+'_data.csv'),'w')
@@ -107,6 +106,7 @@ for cur_trial in trial_list:
     else:
         #incorrect
         incorrect_feedback.draw()
+        
         win.flip()
         incorrect_feedback_sound.play()
         core.wait(0.3)
